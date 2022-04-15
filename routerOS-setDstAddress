@@ -1,0 +1,10 @@
+:global dstaddr
+:global ipaddr [/ip address get [/ip address find interface=pppoe-out1] address]
+:set ipaddr [:pick $ipaddr 0 ([len $ipaddr] -3)]
+:global natids [/ip firewall nat find chain="dstnat"]
+:foreach natid in=$natids do={
+:set dstaddr [/ip firewall nat get $natid dst-address]
+:if ($ipaddr != $dstaddr) do={
+:log info [/ip firewall nat set $natid dst-address=$ipaddr]
+}
+}
